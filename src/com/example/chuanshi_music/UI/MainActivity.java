@@ -12,8 +12,6 @@ import com.example.chuanshi_music.model.MusicInfo;
 import com.example.chuanshi_music.service.PlayService;
 import com.example.chuanshi_music.util.MediaUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
-import android.R.bool;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -92,6 +90,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		preButton.setOnClickListener(this);
 		nextButton.setOnClickListener(this);
 		orderButton.setOnClickListener(this);
+		lrc.setOnClickListener(this);
 		
 		homeReceiver = new HomeReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -198,6 +197,12 @@ public class MainActivity extends Activity implements OnClickListener{
 			intent.putExtra("control", status);
 			sendBroadcast(intent);
 			break;
+		case R.id.lrc:
+			if (isPlaying) {
+				intent.setClass(MainActivity.this, ShoLrcView.class);
+				intent.putExtra("current", listPosition);
+				startActivity(intent);
+			}
 		default:
 			break;
 		}
@@ -245,7 +250,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			endTime.setText(MediaUtil.formatTime(musicInfo.getDuration()));
 			duration = (int) musicInfo.getDuration();
 			seekBar.setMax(duration);
-			
+			startButton.setImageResource(R.drawable.start);
 			play();
 		}
 	}
@@ -336,6 +341,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 	}
 	}
+	
 	
 	private class SeekBarChangeListener implements OnSeekBarChangeListener{
 

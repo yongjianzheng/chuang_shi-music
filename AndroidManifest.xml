@@ -16,13 +16,14 @@
         <activity
             android:name="com.example.chuanshi_music.UI.MainActivity"
             android:label="@string/app_name" 
-            android:launchMode="singleTop">
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.example.chuanshi_music.UI.ShoLrcView"></activity>
         <service android:name="com.example.chuanshi_music.service.PlayService"></service>
     </application>
 

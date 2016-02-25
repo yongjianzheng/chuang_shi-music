@@ -48,6 +48,7 @@ public class PlayService extends Service {
                     Intent intent = new Intent();  
                     intent.setAction(MUSIC_CURRENT);  
                     intent.putExtra("currentTime", currentTime);  
+                    intent.putExtra("duration", duration);
                     sendBroadcast(intent); 
                     handler.sendEmptyMessageDelayed(1, 1000);  
                 }  
