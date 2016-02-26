@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import com.example.chuanshi_music.R;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -69,6 +67,7 @@ public class ShoLrcView extends Activity implements OnClickListener{
 	private void initLrc() {
 		lrcUtil = new LrcUtil();
 		lrcUtil.readLrc(list.get(current).getUrl());
+		//System.out.println(list.get(current).getUrl());
 		lrcInfos = lrcUtil.getLrcList();
 		lrcView.setLrcInfos(lrcInfos);
 		lrcView.setAnimation(AnimationUtils.loadAnimation(ShoLrcView.this, R.anim.alpha_z));

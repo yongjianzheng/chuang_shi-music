@@ -311,6 +311,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		intent.putExtra("MSG", AppConstant.PLAY_MSG);
 		startService(intent);
 		isPause = false;
+		isFirstTime = false;
 		isPlaying = true;
 	}
 	
