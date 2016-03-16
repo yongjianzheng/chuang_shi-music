@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements OnClickListener{
     public static final String MUSIC_DURATION = "com.action.MUSIC_DURATION";  
     public static final String REPEAT_ACTION = "com.action.REPEAT_ACTION";  
     public static final String SHUFFLE_ACTION = "com.action.SHUFFLE_ACTION";  
+    public static final String MUSIC_SERVICE = "com.action.MUSIC_SERVICE";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +96,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		homeReceiver = new HomeReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(CTL_ACTION);
-		filter.addAction(REPEAT_ACTION);
-		filter.addAction(SHUFFLE_ACTION);
+		filter.addAction(MUSIC_SERVICE);
 		filter.addAction(UPDATE_ACTION);
 		filter.addAction(MUSIC_DURATION);
 		filter.addAction(MUSIC_CURRENT);
@@ -339,6 +339,14 @@ public class MainActivity extends Activity implements OnClickListener{
 				startButton.setImageResource(R.drawable.pause);
 				isPause = true;
 			}
+		}else if (action.equals(ACCOUNT_SERVICE)) {
+			int msg = intent.getIntExtra("status", -1);
+			if (msg == AppConstant.PAUSE_MSG) {
+				startButton.setImageResource(R.drawable.pause);
+			}else if (msg ==AppConstant.CONTINUE_MSG) {
+				startButton.setImageResource(R.drawable.start);
+			}
+			
 		}
 	}
 	}

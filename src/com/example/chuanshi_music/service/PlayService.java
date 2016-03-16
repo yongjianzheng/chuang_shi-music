@@ -7,6 +7,8 @@ import java.util.List;
 import com.example.chuanshi_music.UI.MainActivity;
 import com.example.chuanshi_music.model.*;
 import com.example.chuanshi_music.util.MediaUtil;
+
+import android.R.integer;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,6 +19,8 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Handler;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 
 public class PlayService extends Service {
 
@@ -31,10 +35,13 @@ public class PlayService extends Service {
 	List<MusicInfo> list = new ArrayList<MusicInfo>();     // 存放music对象的集合
 	private myReceiver receiver;
 	
+	private int flag = 0;   //判断是否因为来电而暂停
+	
 	public static final String UPDATE_ACTION = "com.action.UPDATE_ACTION";  //更新动作  
     public static final String CTL_ACTION = "com.action.CTL_ACTION";        //控制动作  
     public static final String MUSIC_CURRENT = "com.action.MUSIC_CURRENT";  //当前音乐播放时间更新动作  
     public static final String MUSIC_DURATION = "com.action.MUSIC_DURATION";//新音乐长度更新动作  
+    public static final String MUSIC_SERVICE = "com.action.MUSIC_SERVICE";
 	
     
     /**
@@ -112,11 +119,47 @@ public class PlayService extends Service {
 			}
 		});
 		
-		 receiver = new myReceiver();
+		receiver = new myReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(MainActivity.CTL_ACTION);
 		registerReceiver(receiver, filter);
+		
+		
+		TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		manager.listen(new MobilePhoneStatusListens(), PhoneStateListener.LISTEN_CALL_STATE);
 	}
+    private class MobilePhoneStatusListens extends PhoneStateListener{
+
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber) {
+			switch (state) {
+			case TelephonyManager.CALL_STATE_IDLE:   //挂机状态
+				if (!mediaPlayer.isPlaying() && flag == 1) {
+					resume();
+					Intent intent = new Intent(MUSIC_SERVICE);
+					intent.putExtra("status", AppConstant.CONTINUE_MSG);
+					sendBroadcast(intent);
+					flag = 0;
+				}
+				break;
+			case TelephonyManager.CALL_STATE_RINGING: //来电
+			case TelephonyManager.CALL_STATE_OFFHOOK: //通话中
+				if (mediaPlayer !=null && mediaPlayer.isPlaying()) {
+					mediaPlayer.pause();
+					isPause = true;
+					Intent intent = new Intent(MUSIC_SERVICE);
+					intent.putExtra("status", AppConstant.PAUSE_MSG);
+					sendBroadcast(intent);
+					flag = 1;
+				}
+	
+				break;
+			default:
+				break;
+			}
+		}
+    	
+    }
     
     protected int getRandomIndex(int end) {  
         int index = (int) (Math.random() * end);  
